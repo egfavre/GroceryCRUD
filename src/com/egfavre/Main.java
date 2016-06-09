@@ -25,18 +25,16 @@ public class Main {
             items.add(item);
         }
 
-        System.out.println (items.get(3).unitPrice);
-/*
+//display welcome page
         Spark.init();
         Spark.get(
                 "/",
                 (request, response) -> {
-                    HashMap m = new HashMap<>();
-                    return new ModelAndView(m, "messages.html");
+                    HashMap a = new HashMap<>();
+                    return new ModelAndView(a, "welcome.html");
                 },
             new MustacheTemplateEngine()
          );
 
-*/
     }
 }
