@@ -13,7 +13,7 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
-        File f = new File("Grocery.csv");
+        File f = new File("groceryFinal.csv");
         Scanner fileScanner = new Scanner(f);
         ArrayList<Item> items = new ArrayList<>();
 
@@ -21,10 +21,12 @@ public class Main {
         while (fileScanner.hasNextLine()) {
             String line = fileScanner.nextLine();
             String[] columns = line.split(",");
-            Item item = new Item();
+            Item item = new Item(columns[0], columns[1], columns[2], columns[3], columns[4]);
             items.add(item);
         }
 
+        System.out.println (items.get(3).unitPrice);
+/*
         Spark.init();
         Spark.get(
                 "/",
@@ -35,6 +37,6 @@ public class Main {
             new MustacheTemplateEngine()
          );
 
-
+*/
     }
 }

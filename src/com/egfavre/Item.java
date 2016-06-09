@@ -9,4 +9,12 @@ public class Item {
     String itemName;
     String unitQuantity;
     String unitPrice;
+
+    public Item(String id, String department, String itemName, String unitQuantity, String unitPrice) {
+        this.id = id;
+        this.department = department;
+        this.itemName = itemName;
+        this.unitQuantity = unitQuantity;
+        this.unitPrice = unitPrice;
+    }
 }
