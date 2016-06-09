@@ -36,5 +36,15 @@ public class Main {
             new MustacheTemplateEngine()
          );
 
+//display viewItems page
+        Spark.get(
+                "/viewItems",
+                (request, response) -> {
+                    HashMap b = new HashMap();
+
+                    return new ModelAndView(b, "viewItems.html");
+                },
+                new MustacheTemplateEngine()
+        );
     }
 }
