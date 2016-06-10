@@ -76,6 +76,11 @@ public class Main {
                         user = new User(username, password);
                         users.put(username, user);
                     }
+                    else {
+                        if (!users.get(username).equals(password)){
+                            throw new Exception("incorrect password");
+                        }
+                    }
                     Session session = request.session();
                     session.attribute("username", username);
 
