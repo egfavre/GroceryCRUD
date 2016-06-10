@@ -25,6 +25,31 @@ public class Main {
             items.add(item);
         }
 
+        ArrayList<Item> deliList = new ArrayList<>();
+        ArrayList<Item> dairyList = new ArrayList<>();
+        ArrayList<Item> produceList = new ArrayList<>();
+        ArrayList<Item> bakeryList = new ArrayList<>();
+        ArrayList<Item> frozenList = new ArrayList<>();
+
+        for (Item item:items) {
+
+            if (item.department.equals("Deli")) {
+                deliList.add(item);
+            }
+            if (item.department.equals("Dairy")) {
+                dairyList.add(item);
+            }
+            if (item.department.equals("Produce")) {
+                produceList.add(item);
+            }
+            if (item.department.equals("Bakery")) {
+                bakeryList.add(item);
+            }
+            if (item.department.equals("Frozen")) {
+                frozenList.add(item);
+            }
+        }
+
 //display welcome page
         Spark.init();
         Spark.get(
@@ -42,6 +67,11 @@ public class Main {
                 (request, response) -> {
                     HashMap b = new HashMap();
                     b.put("items", items);
+                    b.put("deliList", deliList);
+                    b.put("dairyList", dairyList);
+                    b.put("produceList", produceList);
+                    b.put("bakeryList", bakeryList);
+                    b.put("frozenList", frozenList);
                     return new ModelAndView(b, "viewItems.html");
                 },
                 new MustacheTemplateEngine()

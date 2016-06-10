@@ -5,8 +5,29 @@
     <title>GroceryCRUD</title>
 </head>
 <body>
-{{#items}}
-<ol>{{itemName}}</ol>
-{{/items}}
+<h1>Deli Goods</h1>
+{{#deliList}}
+<ol>{{itemName}}    {{unitQuantity}}    {{unitPrice}}</ol>
+{{/deliList}}
+
+<h1>Dairy Goods</h1>
+{{#dairyList}}
+<ol>{{itemName}}    {{unitQuantity}}    {{unitPrice}}</ol>
+{{/dairyList}}
+
+<h1>Produce Goods</h1>
+{{#produceList}}
+<ol>{{itemName}}    {{unitQuantity}}    {{unitPrice}}</ol>
+{{/produceList}}
+
+<h1>Bakery Goods</h1>
+{{#bakeryList}}
+<ol>{{itemName}}    {{unitQuantity}}    {{unitPrice}}</ol>
+{{/bakeryList}}
+
+<h1>Frozen Goods</h1>
+{{#frozenList}}
+<ol>{{itemName}}    {{unitQuantity}}    {{unitPrice}}</ol>
+{{/frozenList}}
 </body>
 </html>
