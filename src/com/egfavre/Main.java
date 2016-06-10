@@ -1,6 +1,7 @@
 package com.egfavre;
 
 import spark.ModelAndView;
+import spark.Session;
 import spark.Spark;
 import spark.template.mustache.MustacheTemplateEngine;
 
@@ -16,6 +17,7 @@ public class Main {
         File f = new File("groceryFinal.csv");
         Scanner fileScanner = new Scanner(f);
         ArrayList<Item> items = new ArrayList<>();
+        HashMap<String, User> users = new HashMap<>();
 
         fileScanner.nextLine();
         while (fileScanner.hasNextLine()) {
@@ -60,6 +62,27 @@ public class Main {
                 },
             new MustacheTemplateEngine()
          );
+
+        Spark.post(
+                "/login",
+                (request, response) -> {
+                    String username = request.queryParams("username");
+                    String password = request.queryParams("password");
+                    if (username.isEmpty() || password.isEmpty()) {
+                        throw new Exception("username and/or password not valid");
+                    }
+                    User user = users.get(username);
+                    if (user == null) {
+                        user = new User(username, password);
+                        users.put(username, user);
+                    }
+                    Session session = request.session();
+                    session.attribute("username", username);
+
+                    response.redirect("/viewItems");
+                    return "";
+                }
+        );
 
 //display viewItems page
         Spark.get(
