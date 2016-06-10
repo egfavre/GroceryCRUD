@@ -41,7 +41,7 @@ public class Main {
                 "/viewItems",
                 (request, response) -> {
                     HashMap b = new HashMap();
-
+                    b.put("items", items);
                     return new ModelAndView(b, "viewItems.html");
                 },
                 new MustacheTemplateEngine()
