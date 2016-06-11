@@ -118,10 +118,11 @@ public class Main {
                     return "";
                 }
         );
-        Spark.get(
+        Spark.post(
                 "/createShoppingList",
                 (request, response) -> {
-                    response.redirect("/");
+                    HashMap c  = new HashMap();
+                    response.redirect("/shoppingList");
                     return "";
                 }
         );
@@ -135,6 +136,15 @@ public class Main {
                     response.redirect("/");
                     return "";
                 }
+        );
+
+        Spark.get(
+                "/shoppingList",
+                (request, response) -> {
+                    HashMap d = new HashMap();
+                    return new ModelAndView(d, "viewItems.html");
+                },
+                new MustacheTemplateEngine()
         );
     }
 }
