@@ -7,7 +7,12 @@
 <body>
 <h1>Deli Goods</h1>
 {{#deliList}}
-<ol>{{itemName}}    {{unitQuantity}}    {{unitPrice}}</ol>
+<ol>{{itemName}}    {{unitQuantity}}    {{unitPrice}}
+    <form action="/edit-message" method="post">
+        <input type="number" name="qty" placeholder="#"/>
+        <button type="submit">Add</button>
+    </form>
+</ol>
 {{/deliList}}
 
 <h1>Dairy Goods</h1>
@@ -29,5 +34,10 @@
 {{#frozenList}}
 <ol>{{itemName}}    {{unitQuantity}}    {{unitPrice}}</ol>
 {{/frozenList}}
+
+<form action="/logout" method="post" style="display:inLine=block;">
+    <button type="submit">Logout</button>
+</form>
+
 </body>
 </html>

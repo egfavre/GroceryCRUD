@@ -104,5 +104,15 @@ public class Main {
                 },
                 new MustacheTemplateEngine()
         );
+
+        Spark.post(
+                "/logout",
+                (request, response) -> {
+                    Session session = request.session();
+                    session.invalidate();
+                    response.redirect("/");
+                    return "";
+                }
+        );
     }
 }
