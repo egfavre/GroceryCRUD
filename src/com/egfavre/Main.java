@@ -104,6 +104,28 @@ public class Main {
                 },
                 new MustacheTemplateEngine()
         );
+        Spark.post(
+                "/quantity",
+                (request, response) -> {
+                    Session session = request.session();
+                    String qty = session.attribute("qty");
+
+                    if (qty == ""){
+                        qty = "0";
+                    }
+
+                    response.redirect("/");
+                    return "";
+                }
+        );
+        Spark.get(
+                "/createShoppingList",
+                (request, response) -> {
+                    response.redirect("/");
+                    return "";
+                }
+        );
+
 
         Spark.post(
                 "/logout",
