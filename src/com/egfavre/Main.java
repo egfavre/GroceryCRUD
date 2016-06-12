@@ -33,7 +33,7 @@ public class Main {
         ArrayList<Item> bakeryList = new ArrayList<>();
         ArrayList<Item> frozenList = new ArrayList<>();
         ArrayList<String> shoppingList = new ArrayList<>();
-        HashMap<Item, String> currentList = new HashMap();
+        HashMap<String, String> currentList = new HashMap();
 
         for (Item item:items) {
 
@@ -109,27 +109,25 @@ public class Main {
         Spark.post(
                 "/quantity",
                 (request, response) -> {
-                    Session session = request.session();
-                    String qty = session.attribute("qty");
+
+                    String qty = request.queryParams("qty");
+                    String id = request.queryParams("id");
 
                     if (qty == ""){
                         qty = "0";
                     }
+                    else qty = request.queryParams("qty");
+                    currentList.put(id, qty);
 
-                    response.redirect("/");
+                    currentList.put(id,qty);
+
+                    response.redirect(request.headers("Referer"));
                     return "";
                 }
         );
         Spark.post(
                 "/createShoppingList",
                 (request, response) -> {
-                    Session session = request.session();
-                    String qty = session.attribute("qty");
-                    //add each item and quantity to hashMap currentList
-                    for (Item item:deliList) {
-                        currentList.put(item, qty);
-                    }
-
                     response.redirect("/shoppingList");
                     return "";
                 }

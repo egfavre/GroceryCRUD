@@ -9,8 +9,8 @@
 {{#deliList}}
 <ol>{{itemName}}    {{unitQuantity}}    {{unitPrice}}
     <form action="/quantity" method="post">
-        <input type="number" name="qty" placeholder="#"/>
-        <input type="hidden" name="id" value="{{item.id}}">
+        <input type="number" name="qty" placeholder="#" value="{{qty}}"/>
+        <input type="hidden" name="id" value="{{id}}">
         <button type="submit">Add</button>
     </form>
 </ol>
