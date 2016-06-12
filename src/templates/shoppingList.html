@@ -5,6 +5,10 @@
     <title>GroceryCRUD</title>
 </head>
 <body>
-hi
+<h1>Your Shopping List</h1>
+<ol>{{#currentList}}
+<li>{{itemName}}{{unitPrice}} {{qty}}</li>
+{{/currentList}}
+    </ol>
 </body>
 </html>

@@ -70,13 +70,13 @@ public class Item {
         this.qty = qty;
     }
 
-    public Item(String id, String department, String itemName, String unitQuantity, String unitPrice) {
+    public Item(String id, String department, String itemName, String unitQuantity, String unitPrice, String qty) {
         this.id = id;
         this.department = department;
         this.itemName = itemName;
         this.unitQuantity = unitQuantity;
         this.unitPrice = unitPrice;
-
-
+        this.qty = qty;
     }
 }
+

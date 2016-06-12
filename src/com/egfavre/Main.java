@@ -23,7 +23,7 @@ public class Main {
         while (fileScanner.hasNextLine()) {
             String line = fileScanner.nextLine();
             String[] columns = line.split(",");
-            Item item = new Item(columns[0], columns[1], columns[2], columns[3], columns[4]);
+            Item item = new Item(columns[0], columns[1], columns[2], columns[3], columns[4], "0");
             items.add(item);
         }
 
@@ -32,7 +32,7 @@ public class Main {
         ArrayList<Item> produceList = new ArrayList<>();
         ArrayList<Item> bakeryList = new ArrayList<>();
         ArrayList<Item> frozenList = new ArrayList<>();
-        ArrayList<String []> shoppingList = new ArrayList<>();
+        ArrayList<ArrayList> shoppingList = new ArrayList<>();
         ArrayList<Item> currentList = new ArrayList<>();
 
         for (Item item:items) {
@@ -117,7 +117,9 @@ public class Main {
                         qty = "0";
                     }
                     qty = request.queryParams("qty");
-                    String[] idQty = {id, qty};
+                    ArrayList<String> idQty = new ArrayList<String>();
+                    idQty.add(id);
+                    idQty.add(qty);
                     shoppingList.add(idQty);
 
                     response.redirect(request.headers("Referer"));
@@ -127,9 +129,10 @@ public class Main {
         Spark.post(
                 "/createShoppingList",
                 (request, response) -> {
-                    for (String[] idQty: shoppingList) {
-                        int id = Integer.valueOf(idQty[0]);
-                        items.get(id-1).setQty(idQty[1]);
+                    for (ArrayList idQty:shoppingList) {
+                        String idStr = (String.valueOf(idQty.get(0)));
+                        int id = (Integer.valueOf(idStr));
+                        items.get(id-1).setQty((String) idQty.get(1));
                         currentList.add(items.get(id-1));
                     }
                     response.redirect("/shoppingList");
@@ -150,7 +153,10 @@ public class Main {
         Spark.get(
                 "/shoppingList",
                 (request, response) -> {
-                    return new ModelAndView(currentList, "shoppingList.html");
+                   HashMap d = new HashMap();
+                    d.put("items", items);
+                    d.put("currentList", currentList);
+                    return new ModelAndView(d, "shoppingList.html");
                 },
                 new MustacheTemplateEngine()
         );
