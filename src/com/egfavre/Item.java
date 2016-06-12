@@ -9,6 +9,7 @@ public class Item {
     String itemName;
     String unitQuantity;
     String unitPrice;
+    String qty;
 
     public String getId() {
         return id;
@@ -59,6 +60,14 @@ public class Item {
                 ", unitQuantity='" + unitQuantity + '\'' +
                 ", unitPrice='" + unitPrice + '\'' +
                 '}';
+    }
+
+    public String getQty() {
+        return qty;
+    }
+
+    public void setQty(String qty) {
+        this.qty = qty;
     }
 
     public Item(String id, String department, String itemName, String unitQuantity, String unitPrice) {

@@ -32,6 +32,8 @@ public class Main {
         ArrayList<Item> produceList = new ArrayList<>();
         ArrayList<Item> bakeryList = new ArrayList<>();
         ArrayList<Item> frozenList = new ArrayList<>();
+        ArrayList<String> shoppingList = new ArrayList<>();
+        HashMap<Item, String> currentList = new HashMap();
 
         for (Item item:items) {
 
@@ -121,13 +123,19 @@ public class Main {
         Spark.post(
                 "/createShoppingList",
                 (request, response) -> {
-                    HashMap c  = new HashMap();
+                    Session session = request.session();
+                    String qty = session.attribute("qty");
+                    //add each item and quantity to hashMap currentList
+                    for (Item item:deliList) {
+                        currentList.put(item, qty);
+                    }
+
                     response.redirect("/shoppingList");
                     return "";
                 }
         );
 
-
+        System.out.println(currentList);
         Spark.post(
                 "/logout",
                 (request, response) -> {
@@ -142,7 +150,8 @@ public class Main {
                 "/shoppingList",
                 (request, response) -> {
                     HashMap d = new HashMap();
-                    return new ModelAndView(d, "viewItems.html");
+
+                    return new ModelAndView(d, "shoppingList.html");
                 },
                 new MustacheTemplateEngine()
         );
