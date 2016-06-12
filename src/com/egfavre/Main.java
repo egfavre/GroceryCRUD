@@ -113,7 +113,7 @@ public class Main {
                     String qty = request.queryParams("qty");
                     String id = request.queryParams("id");
 
-                    if (qty == ""){
+                    if (qty.isEmpty()){
                         qty = "0";
                     }
                     qty = request.queryParams("qty");
@@ -128,20 +128,15 @@ public class Main {
                 "/createShoppingList",
                 (request, response) -> {
                     for (String[] idQty: shoppingList) {
-                        int idInt = Integer.valueOf(idQty[0]);
-                        String newQty = idQty[1];
-                        items.get(idInt).qty = newQty;
-                        currentList.add(items.get(idInt));
-
+                        int id = Integer.valueOf(idQty[0]);
+                        items.get(id-1).setQty(idQty[1]);
+                        currentList.add(items.get(id-1));
                     }
-
-
                     response.redirect("/shoppingList");
                     return "";
                 }
         );
 
-        System.out.println(currentList);
         Spark.post(
                 "/logout",
                 (request, response) -> {
@@ -155,7 +150,6 @@ public class Main {
         Spark.get(
                 "/shoppingList",
                 (request, response) -> {
-                    HashMap d = new HashMap();
                     return new ModelAndView(currentList, "shoppingList.html");
                 },
                 new MustacheTemplateEngine()

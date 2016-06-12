@@ -7,7 +7,7 @@
 <body>
 <h1>Deli Goods</h1>
 {{#deliList}}
-<ol>{{itemName}}    {{unitQuantity}}    {{unitPrice}}
+<ol>{{id}} {{itemName}}    {{unitQuantity}}    {{unitPrice}}
     <form action="/quantity" method="post">
         <input type="number" name="qty" placeholder="#" value="{{qty}}"/>
         <input type="hidden" name="id" value="{{id}}">
@@ -18,10 +18,10 @@
 
 <h1>Dairy Goods</h1>
 {{#dairyList}}
-<ol>{{itemName}}    {{unitQuantity}}    {{unitPrice}}
+<ol>{{id}} {{itemName}}    {{unitQuantity}}    {{unitPrice}}
     <form action="/quantity" method="post">
-        <input type="number" name="qty" placeholder="#"/>
-        <input type="hidden" name="id" value="{{item.id}}">
+        <input type="number" name="qty" placeholder="#" value="{{qty}}"/>
+        <input type="hidden" name="id" value="{{id}}">
         <button type="submit">Add</button>
     </form>
 </ol>
@@ -29,10 +29,10 @@
 
 <h1>Produce Goods</h1>
 {{#produceList}}
-<ol>{{itemName}}    {{unitQuantity}}    {{unitPrice}}
+<ol>{{id}} {{itemName}}    {{unitQuantity}}    {{unitPrice}}
     <form action="/quantity" method="post">
-        <input type="number" name="qty" placeholder="#"/>
-        <input type="hidden" name="id" value="{{item.id}}">
+        <input type="number" name="qty" placeholder="#" value="{{qty}}"/>
+        <input type="hidden" name="id" value="{{id}}">
         <button type="submit">Add</button>
     </form>
 </ol>
@@ -40,10 +40,10 @@
 
 <h1>Bakery Goods</h1>
 {{#bakeryList}}
-<ol>{{itemName}}    {{unitQuantity}}    {{unitPrice}}
+<ol>{{id}} {{itemName}}    {{unitQuantity}}    {{unitPrice}}
     <form action="/quantity" method="post">
-        <input type="number" name="qty" placeholder="#"/>
-        <input type="hidden" name="id" value="{{item.id}}">
+        <input type="number" name="qty" placeholder="#" value="{{qty}}"/>
+        <input type="hidden" name="id" value="{{id}}">
         <button type="submit">Add</button>
     </form>
 </ol>
@@ -51,10 +51,10 @@
 
 <h1>Frozen Goods</h1>
 {{#frozenList}}
-<ol>{{itemName}}    {{unitQuantity}}    {{unitPrice}}
+<ol>{{id}} {{itemName}}    {{unitQuantity}}    {{unitPrice}}
     <form action="/quantity" method="post">
-        <input type="number" name="qty" placeholder="#"/>
-        <input type="hidden" name="id" value="{{item.id}}">
+        <input type="number" name="qty" placeholder="#" value="{{qty}}"/>
+        <input type="hidden" name="id" value="{{id}}">
         <button type="submit">Add</button>
     </form>
 </ol>
