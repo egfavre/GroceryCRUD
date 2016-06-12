@@ -32,8 +32,8 @@ public class Main {
         ArrayList<Item> produceList = new ArrayList<>();
         ArrayList<Item> bakeryList = new ArrayList<>();
         ArrayList<Item> frozenList = new ArrayList<>();
-        ArrayList<String> shoppingList = new ArrayList<>();
-        HashMap<String, String> currentList = new HashMap();
+        ArrayList<String []> shoppingList = new ArrayList<>();
+        ArrayList<Item> currentList = new ArrayList<>();
 
         for (Item item:items) {
 
@@ -116,10 +116,9 @@ public class Main {
                     if (qty == ""){
                         qty = "0";
                     }
-                    else qty = request.queryParams("qty");
-                    currentList.put(id, qty);
-
-                    currentList.put(id,qty);
+                    qty = request.queryParams("qty");
+                    String[] idQty = {id, qty};
+                    shoppingList.add(idQty);
 
                     response.redirect(request.headers("Referer"));
                     return "";
@@ -128,6 +127,15 @@ public class Main {
         Spark.post(
                 "/createShoppingList",
                 (request, response) -> {
+                    for (String[] idQty: shoppingList) {
+                        int idInt = Integer.valueOf(idQty[0]);
+                        String newQty = idQty[1];
+                        items.get(idInt).qty = newQty;
+                        currentList.add(items.get(idInt));
+
+                    }
+
+
                     response.redirect("/shoppingList");
                     return "";
                 }
@@ -148,8 +156,7 @@ public class Main {
                 "/shoppingList",
                 (request, response) -> {
                     HashMap d = new HashMap();
-
-                    return new ModelAndView(d, "shoppingList.html");
+                    return new ModelAndView(currentList, "shoppingList.html");
                 },
                 new MustacheTemplateEngine()
         );
