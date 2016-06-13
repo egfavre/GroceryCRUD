@@ -35,6 +35,7 @@ public class Main {
         ArrayList<ArrayList> shoppingList = new ArrayList<>();
         ArrayList<Item> currentList = new ArrayList<>();
 
+
         for (Item item:items) {
 
             if (item.department.equals("Deli")) {
@@ -65,47 +66,53 @@ public class Main {
             new MustacheTemplateEngine()
          );
 
+
         Spark.post(
                 "/login",
                 (request, response) -> {
                     String username = request.queryParams("username");
                     String password = request.queryParams("password");
-                    if (username.isEmpty() || password.isEmpty()) {
-                        throw new Exception("username and/or password not valid");
+                    if (username == null || password == null){
+                        throw new Exception("Not Valid login");
                     }
+
                     User user = users.get(username);
                     if (user == null) {
                         user = new User(username, password);
                         users.put(username, user);
                     }
-                    else {
-                        if (!users.get(username).equals(password)){
-                            throw new Exception("incorrect password");
-                        }
-                    }
                     Session session = request.session();
                     session.attribute("username", username);
-
+                    System.out.println(users);
                     response.redirect("/viewItems");
                     return "";
                 }
         );
+
 
 //display viewItems page
         Spark.get(
                 "/viewItems",
                 (request, response) -> {
                     HashMap b = new HashMap();
+                    boolean loggedIn = false;
+                    if (!users.isEmpty()) {
+                        loggedIn = true;
+                    }
+
                     b.put("items", items);
                     b.put("deliList", deliList);
                     b.put("dairyList", dairyList);
                     b.put("produceList", produceList);
                     b.put("bakeryList", bakeryList);
                     b.put("frozenList", frozenList);
+                    b.put("loggedIn", loggedIn);
                     return new ModelAndView(b, "viewItems.html");
                 },
                 new MustacheTemplateEngine()
         );
+
+
         Spark.post(
                 "/quantity",
                 (request, response) -> {

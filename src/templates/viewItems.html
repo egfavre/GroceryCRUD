@@ -7,64 +7,65 @@
 <body>
 <h1>Deli Goods</h1>
 {{#deliList}}
+
 <ol>{{id}} {{itemName}}    {{unitQuantity}}    {{unitPrice}}
-    <form action="/quantity" method="post">
+    {{#loggedIn}}<form action="/quantity" method="post">
         <input type="number" name="qty" placeholder="#" value="{{qty}}"/>
         <input type="hidden" name="id" value="{{id}}">
         <button type="submit">Add</button>
-    </form>
+    </form>{{/loggedIn}}
 </ol>
 {{/deliList}}
 
 <h1>Dairy Goods</h1>
 {{#dairyList}}
 <ol>{{id}} {{itemName}}    {{unitQuantity}}    {{unitPrice}}
-    <form action="/quantity" method="post">
+    {{#loggedIn}}<form action="/quantity" method="post">
         <input type="number" name="qty" placeholder="#" value="{{qty}}"/>
         <input type="hidden" name="id" value="{{id}}">
         <button type="submit">Add</button>
-    </form>
+    </form>{{/loggedIn}}
 </ol>
 {{/dairyList}}
 
 <h1>Produce Goods</h1>
 {{#produceList}}
 <ol>{{id}} {{itemName}}    {{unitQuantity}}    {{unitPrice}}
-    <form action="/quantity" method="post">
+    {{#loggedIn}}<form action="/quantity" method="post">
         <input type="number" name="qty" placeholder="#" value="{{qty}}"/>
         <input type="hidden" name="id" value="{{id}}">
         <button type="submit">Add</button>
-    </form>
+    </form>{{/loggedIn}}
 </ol>
 {{/produceList}}
 
 <h1>Bakery Goods</h1>
 {{#bakeryList}}
 <ol>{{id}} {{itemName}}    {{unitQuantity}}    {{unitPrice}}
-    <form action="/quantity" method="post">
+    {{#loggedIn}}<form action="/quantity" method="post">
         <input type="number" name="qty" placeholder="#" value="{{qty}}"/>
         <input type="hidden" name="id" value="{{id}}">
         <button type="submit">Add</button>
-    </form>
+    </form>{{/loggedIn}}
 </ol>
 {{/bakeryList}}
 
 <h1>Frozen Goods</h1>
 {{#frozenList}}
 <ol>{{id}} {{itemName}}    {{unitQuantity}}    {{unitPrice}}
-    <form action="/quantity" method="post">
+    {{#loggedIn}}<form action="/quantity" method="post">
         <input type="number" name="qty" placeholder="#" value="{{qty}}"/>
         <input type="hidden" name="id" value="{{id}}">
         <button type="submit">Add</button>
-    </form>
+    </form>{{/loggedIn}}
 </ol>
 {{/frozenList}}
-<form action="/createShoppingList" method="post">
+{{#loggedIn}}<form action="/createShoppingList" method="post">
     <button type="submit">Create Shopping List</button>
-</form>
-<form action="/logout" method="post">
+</form>{{/loggedIn}}
+{{#loggedIn}}<form action="/logout" method="post">
     <button type="submit">Logout</button>
-</form>
+</form>{{/loggedIn}}
 
 </body>
 </html>

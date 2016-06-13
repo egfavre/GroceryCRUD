@@ -10,6 +10,7 @@ public class User {
     String password;
     ArrayList shoppingList;
 
+
     public User(String username, String password) {
         this.username = username;
         this.password = password;
