@@ -160,5 +160,34 @@ public class Main {
                 },
                 new MustacheTemplateEngine()
         );
+
+        Spark.post(
+                "/updateQty",
+                (request, response) -> {
+                    String updateQty = request.queryParams("updateQty");
+                    String id = request.queryParams("id");
+                    for (Item item:items){
+                        if (item.id.equals(id)){
+                            item.qty = updateQty;
+                        }
+                    }
+                    response.redirect(request.headers("Referer"));
+                    return "";
+                }
+        );
+
+        Spark.post(
+                "/delete",
+                (request, response) -> {
+                    String id = request.queryParams("id");
+                    for (Item item:items){
+                        if (item.id.equals(id)){
+                            currentList.remove(item);
+                        }
+                    }
+                    response.redirect(request.headers("Referer"));
+                    return "";
+                }
+        );
     }
 }
