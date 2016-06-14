@@ -19,7 +19,7 @@ public class Main {
         Statement stmt = conn.createStatement();
         stmt.execute("CREATE TABLE IF NOT EXISTS users (id IDENTITY, user_name VARCHAR, password VARCHAR)");
         stmt.execute("CREATE TABLE IF NOT EXISTS items (id IDENTITY, department VARCHAR, item_name VARCHAR, unit_qty VARCHAR, unit_price DOUBLE)");
-        stmt.execute("CREATE TABLE IF NOT EXISTS purchases (id IDENTITY, user_id, INT, item_id INT, qty INT)");
+        stmt.execute("CREATE TABLE IF NOT EXISTS purchases (id IDENTITY, user_id INT, item_id INT, qty INT)");
     }
 
     public static void insertUser(Connection conn, String userName, String password) throws SQLException {
@@ -102,7 +102,7 @@ public class Main {
 //    }
 
     public static void main(String[] args) throws FileNotFoundException, SQLException {
-        File f = new File("groceryFinal.csv");
+  /*      File f = new File("groceryFinal.csv");
         Scanner fileScanner = new Scanner(f);
         ArrayList<Item> items = new ArrayList<>();
         HashMap<String, User> users = new HashMap<>();
@@ -139,14 +139,14 @@ public class Main {
             if (item.department.equals("Frozen")) {
                 frozenList.add(item);
             }
-        }
+        }*/
 
 //create server connection and tables
         Server.createWebServer().start();
         Connection conn = DriverManager.getConnection("jdbc:h2:./main");
         createTables(conn);
 
-
+/*
 //display welcome page
         Spark.staticFileLocation("public");
         Spark.init();
@@ -163,19 +163,19 @@ public class Main {
         Spark.post(
                 "/login",
                 (request, response) -> {
-                    String username = request.queryParams("username");
+                    String userName = request.queryParams("userName");
                     String password = request.queryParams("password");
-                    if (username == null || password == null){
+                    if (userName == null || password == null){
                         throw new Exception("Not Valid login");
                     }
 
-                    User user = users.get(username);
+                    User user = users.get(userName);
                     if (user == null) {
-                        user = new User(username, password);
-                        users.put(username, user);
+                        user = new User(userName, password);
+                        users.put(userName, user);
                     }
                     Session session = request.session();
-                    session.attribute("username", username);
+                    session.attribute("userName", userName);
                     System.out.println(users);
                     response.redirect("/viewItems");
                     return "";
@@ -210,8 +210,8 @@ public class Main {
                 "/quantity",
                 (request, response) -> {
                     Session session = request.session();
-                    String username = session.attribute("username");
-                    User user = users.get(username);
+                    String userName = session.attribute("userName");
+                    User user = users.get(userName);
 
                     String qty = request.queryParams("qty");
                     String id = request.queryParams("id");
@@ -233,8 +233,8 @@ public class Main {
                 "/createShoppingList",
                 (request, response) -> {
                     Session session = request.session();
-                    String username = session.attribute("username");
-                    User user = users.get(username);
+                    String userName = session.attribute("userName");
+                    User user = users.get(userName);
 
                     for (ArrayList idQty: user.shoppingList) {
                         String idStr = (String.valueOf(idQty.get(0)));
@@ -261,8 +261,8 @@ public class Main {
                 "/shoppingList",
                 (request, response) -> {
                     Session session = request.session();
-                    String username = session.attribute("username");
-                    User user = users.get(username);
+                    String userName = session.attribute("userName");
+                    User user = users.get(userName);
                     HashMap d = new HashMap();
                     d.put("items", items);
                     d.put("currentList", user.currentList);
@@ -290,8 +290,8 @@ public class Main {
                 "/delete",
                 (request, response) -> {
                     Session session = request.session();
-                    String username = session.attribute("username");
-                    User user = users.get(username);
+                    String userName = session.attribute("userName");
+                    User user = users.get(userName);
 
                     String id = request.queryParams("id");
                     for (Item item:items){
@@ -302,6 +302,6 @@ public class Main {
                     response.redirect(request.headers("Referer"));
                     return "";
                 }
-        );
+        );*/
     }
 }
