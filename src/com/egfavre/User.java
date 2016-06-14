@@ -6,37 +6,31 @@ import java.util.ArrayList;
  * Created by user on 6/10/16.
  */
 public class User {
-    String username;
+    int id;
+    String userName;
     String password;
-    ArrayList shoppingList;
+    ArrayList<ArrayList> shoppingList = new ArrayList<>();
 
 
-    public User(String username, String password) {
-        this.username = username;
+    public User(int id, String userName, String password) {
+        this.id = id;
+        this.userName = userName;
         this.password = password;
     }
 
-    public String getUsername() {
-        return username;
+    public int getId() {
+        return id;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public String getUserName() {
+        return userName;
     }
 
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public ArrayList getShoppingList() {
+    public ArrayList<ArrayList> getShoppingList() {
         return shoppingList;
-    }
-
-    public void setShoppingList(ArrayList shoppingList) {
-        this.shoppingList = shoppingList;
     }
 }

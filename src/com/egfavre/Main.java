@@ -1,5 +1,6 @@
 package com.egfavre;
 
+import org.h2.tools.Server;
 import spark.ModelAndView;
 import spark.Session;
 import spark.Spark;
@@ -7,13 +8,100 @@ import spark.template.mustache.MustacheTemplateEngine;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void createTables(Connection conn) throws SQLException {
+        Statement stmt = conn.createStatement();
+        stmt.execute("CREATE TABLE IF NOT EXISTS users (id IDENTITY, user_name VARCHAR, password VARCHAR)");
+        stmt.execute("CREATE TABLE IF NOT EXISTS items (id IDENTITY, department VARCHAR, item_name VARCHAR, unit_qty VARCHAR, unit_price DOUBLE)");
+        stmt.execute("CREATE TABLE IF NOT EXISTS purchases (id IDENTITY, user_id, INT, item_id INT, qty INT)");
+    }
+
+    public static void insertUser(Connection conn, String userName, String password) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO users VALUES (NULL, ?, ?)");
+        stmt.setString(1, userName);
+        stmt.setString(2, password);
+        stmt.execute();
+    }
+
+    public static void insertItem(Connection conn, String department, String itemName, String unitQty, double unitPrice) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO items VALUES (NULL, ?, ?, ?, ?)");
+        stmt.setString(1, department);
+        stmt.setString(2, itemName);
+        stmt.setString(3, unitQty);
+        stmt.setDouble(4, unitPrice);
+        stmt.execute();
+    }
+
+    public static void  insertPurchase(Connection conn, int userId, int itemId, int qty) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO purchases VALUES (NULL, ?, ?, ?)");
+        stmt.setInt(1, userId);
+        stmt.setInt(2, itemId);
+        stmt.setInt(3, qty);
+        stmt.execute();
+    }
+
+    public static User selectUser (Connection conn, String userName) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE user_name = ?");
+        stmt.setString(1,userName);
+        ResultSet results = stmt.executeQuery();
+        if (results.next()){
+            int id = results.getInt("id");
+            String password = results.getString("password");
+            return new User(id, userName, password);
+        }
+        return null;
+    }
+
+    public static Item selectItem (Connection conn, int id) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM items WHERE id = ?");
+        stmt.setInt(1, id);
+        ResultSet results = stmt.executeQuery();
+        if (results.next()){
+            String department = results.getString("department");
+            String itemName = results.getString("item_name");
+            String unitQty = results.getString("unit_qty");
+            double unitPrice = results.getDouble("unit_price");
+            return new Item(id, department, itemName, unitQty, unitPrice);
+        }
+        return null;
+    }
+
+    public static Purchase selectPurchase (Connection conn, int id) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM purchases WHERE id = ?");
+        stmt.setInt(1, id);
+        ResultSet results = stmt.executeQuery();
+        if (results.next()){
+            int userId = results.getInt("user_id");
+            int itemId = results.getInt("item_id");
+            int qty = results.getInt("qty");
+            return new Purchase(id, userId, itemId, qty);
+        }
+        return null;
+    }
+
+
+//    public static ArrayList<Message> selectReplies(Connection conn, int replyId) throws SQLException {
+//        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM messages INNER JOIN users ON messages.user_id = users.id WHERE messages.reply_id = ?");
+//        stmt.setInt(1, replyId);
+//        ResultSet results = stmt.executeQuery();
+//        ArrayList<Message> msgs = new ArrayList<>();
+//        while(results.next()){
+//            int id = results.getInt("id");
+//            String text = results.getString("messages.text");
+//            String author = results.getString("users.name");
+//            Message msg = new Message(id, replyId, author, text);
+//            msgs.add(msg);
+//        }
+//        return msgs;
+//    }
+
+    public static void main(String[] args) throws FileNotFoundException, SQLException {
         File f = new File("groceryFinal.csv");
         Scanner fileScanner = new Scanner(f);
         ArrayList<Item> items = new ArrayList<>();
@@ -32,8 +120,6 @@ public class Main {
         ArrayList<Item> produceList = new ArrayList<>();
         ArrayList<Item> bakeryList = new ArrayList<>();
         ArrayList<Item> frozenList = new ArrayList<>();
-        ArrayList<ArrayList> shoppingList = new ArrayList<>();
-        ArrayList<Item> currentList = new ArrayList<>();
 
 
         for (Item item:items) {
@@ -55,7 +141,14 @@ public class Main {
             }
         }
 
+//create server connection and tables
+        Server.createWebServer().start();
+        Connection conn = DriverManager.getConnection("jdbc:h2:./main");
+        createTables(conn);
+
+
 //display welcome page
+        Spark.staticFileLocation("public");
         Spark.init();
         Spark.get(
                 "/",
@@ -116,6 +209,9 @@ public class Main {
         Spark.post(
                 "/quantity",
                 (request, response) -> {
+                    Session session = request.session();
+                    String username = session.attribute("username");
+                    User user = users.get(username);
 
                     String qty = request.queryParams("qty");
                     String id = request.queryParams("id");
@@ -127,7 +223,7 @@ public class Main {
                     ArrayList<String> idQty = new ArrayList<String>();
                     idQty.add(id);
                     idQty.add(qty);
-                    shoppingList.add(idQty);
+                    user.shoppingList.add(idQty);
 
                     response.redirect(request.headers("Referer"));
                     return "";
@@ -136,11 +232,15 @@ public class Main {
         Spark.post(
                 "/createShoppingList",
                 (request, response) -> {
-                    for (ArrayList idQty:shoppingList) {
+                    Session session = request.session();
+                    String username = session.attribute("username");
+                    User user = users.get(username);
+
+                    for (ArrayList idQty: user.shoppingList) {
                         String idStr = (String.valueOf(idQty.get(0)));
                         int id = (Integer.valueOf(idStr));
                         items.get(id-1).setQty((String) idQty.get(1));
-                        currentList.add(items.get(id-1));
+                        user.currentList.add(items.get(id-1));
                     }
                     response.redirect("/shoppingList");
                     return "";
@@ -160,9 +260,12 @@ public class Main {
         Spark.get(
                 "/shoppingList",
                 (request, response) -> {
-                   HashMap d = new HashMap();
+                    Session session = request.session();
+                    String username = session.attribute("username");
+                    User user = users.get(username);
+                    HashMap d = new HashMap();
                     d.put("items", items);
-                    d.put("currentList", currentList);
+                    d.put("currentList", user.currentList);
                     return new ModelAndView(d, "shoppingList.html");
                 },
                 new MustacheTemplateEngine()
@@ -186,10 +289,14 @@ public class Main {
         Spark.post(
                 "/delete",
                 (request, response) -> {
+                    Session session = request.session();
+                    String username = session.attribute("username");
+                    User user = users.get(username);
+
                     String id = request.queryParams("id");
                     for (Item item:items){
                         if (item.id.equals(id)){
-                            currentList.remove(item);
+                            user.currentList.remove(item);
                         }
                     }
                     response.redirect(request.headers("Referer"));

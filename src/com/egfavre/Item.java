@@ -4,18 +4,26 @@ package com.egfavre;
  * Created by user on 6/9/16.
  */
 public class Item {
-    String id;
+    int id;
     String department;
     String itemName;
-    String unitQuantity;
-    String unitPrice;
-    String qty;
+    String unitQty;
+    double unitPrice;
+    int qty;
 
-    public String getId() {
+    public Item(int id, String department, String itemName, String unitQty, double unitPrice) {
+        this.id = id;
+        this.department = department;
+        this.itemName = itemName;
+        this.unitQty = unitQty;
+        this.unitPrice = unitPrice;
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -35,19 +43,19 @@ public class Item {
         this.itemName = itemName;
     }
 
-    public String getUnitQuantity() {
-        return unitQuantity;
+    public String getUnitQty() {
+        return unitQty;
     }
 
-    public void setUnitQuantity(String unitQuantity) {
-        this.unitQuantity = unitQuantity;
+    public void setUnitQty(String unitQty) {
+        this.unitQty = unitQty;
     }
 
-    public String getUnitPrice() {
+    public double getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(String unitPrice) {
+    public void setUnitPrice(double unitPrice) {
         this.unitPrice = unitPrice;
     }
 
@@ -57,26 +65,9 @@ public class Item {
                 "id='" + id + '\'' +
                 ", department='" + department + '\'' +
                 ", itemName='" + itemName + '\'' +
-                ", unitQuantity='" + unitQuantity + '\'' +
+                ", unitQty='" + unitQty + '\'' +
                 ", unitPrice='" + unitPrice + '\'' +
                 '}';
-    }
-
-    public String getQty() {
-        return qty;
-    }
-
-    public void setQty(String qty) {
-        this.qty = qty;
-    }
-
-    public Item(String id, String department, String itemName, String unitQuantity, String unitPrice, String qty) {
-        this.id = id;
-        this.department = department;
-        this.itemName = itemName;
-        this.unitQuantity = unitQuantity;
-        this.unitPrice = unitPrice;
-        this.qty = qty;
     }
 }
 
