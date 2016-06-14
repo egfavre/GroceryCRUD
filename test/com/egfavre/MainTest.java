@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
@@ -48,6 +49,28 @@ public class MainTest {
         conn.close();
 
         assertTrue(purchase != null);
+    }
+
+    @Test
+    public void testPurchaseByUser() throws SQLException {
+        Connection conn = startConnection();
+        Main.insertUser(conn, "Alice", "");
+        Main.insertUser(conn, "Bob", "");
+        User alice = Main.selectUser(conn, "Alice");
+        User bob = Main.selectUser(conn, "Bob");
+        Main.insertItem(conn, "depA", "itemA", "ea", 80.00);
+        Main.insertItem(conn, "depB", "itemB", "pk", 100.00);
+        Main.insertItem(conn, "depC", "itemC", "case", 30.00);
+        Item a = Main.selectItem(conn, 1);
+        Item b = Main.selectItem(conn, 2);
+        Item c = Main.selectItem(conn, 3);
+        Main.insertPurchase(conn, alice.id, a.id, 10);
+        Main.insertPurchase(conn, alice.id, b.id, 5);
+        Main.insertPurchase(conn, bob.id, c.id, 5);
+
+        ArrayList<Purchase> p = Main.selectPurchasesByUser(conn, "Alice");
+        conn.close();
+        assertTrue(p.size() == 2);
     }
 
 }

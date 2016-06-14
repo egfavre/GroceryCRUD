@@ -85,19 +85,22 @@ public class Main {
         return null;
     }
 
-    public static ArrayList<Purchase> selectPurchasesByUser(Connection conn, int userId) throws SQLException {
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM purchases INNER JOIN items ON purchases.user_id = users.id WHERE purchases.user_id = ?");
-        stmt.setInt(1, userId);
+    public static ArrayList<Purchase> selectPurchasesByUser(Connection conn, String userName) throws SQLException {
+        User user = selectUser(conn, userName);
+        int thisId = user.id;
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM purchases INNER JOIN users ON purchases.user_id = users.id WHERE users.id = ?");
+        stmt.setInt(1, thisId);
         ResultSet results = stmt.executeQuery();
-        ArrayList<Purchase> shoppingList= new ArrayList<>();
+        ArrayList<Purchase> purchaseList= new ArrayList<>();
         while(results.next()){
             int id = results.getInt("purchases.id");
+            int userId = results.getInt("purchases.user_id");
             int itemId = results.getInt("purchases.item_id");
             int qty = results.getInt("purchases.qty");
             Purchase p = new Purchase(id, userId, itemId, qty);
-            shoppingList.add(p);
+            purchaseList.add(p);
         }
-        return shoppingList;
+        return purchaseList;
     }
 
 
