@@ -73,4 +73,18 @@ public class MainTest {
         assertTrue(p.size() == 2);
     }
 
+    @Test
+    public void testUpdate() throws SQLException {
+        Connection conn = startConnection();
+        Main.insertUser(conn, "me", "");
+        Main.insertItem(conn, "a", "b", "c", 5.00);
+        Main.insertPurchase(conn, 1, 1, 10);
+
+        Main.updatePurchase(conn, 5, 1);
+
+        Purchase p = Main.selectPurchase(conn, 1);
+
+        assertTrue(p.qty == 5);
+    }
+
 }

@@ -103,6 +103,13 @@ public class Main {
         return purchaseList;
     }
 
+    public static void updatePurchase (Connection conn, int newQty, int purchaseId) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("UPDATE purchases SET qty = ? WHERE id = ?");
+        stmt.setInt(1, newQty);
+        stmt.setInt(2, purchaseId);
+        stmt.execute();
+    }
+
 
 //    public static ArrayList<Message> selectReplies(Connection conn, int replyId) throws SQLException {
 //        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM messages INNER JOIN users ON messages.user_id = users.id WHERE messages.reply_id = ?");
