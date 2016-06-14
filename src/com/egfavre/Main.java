@@ -110,6 +110,12 @@ public class Main {
         stmt.execute();
     }
 
+    public static void deletePurchase (Connection conn, int purchaseId) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("DELETE FROM purchases WHERE id = ?");
+        stmt.setInt(1, purchaseId);
+        stmt.execute();
+    }
+
 
 //    public static ArrayList<Message> selectReplies(Connection conn, int replyId) throws SQLException {
 //        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM messages INNER JOIN users ON messages.user_id = users.id WHERE messages.reply_id = ?");

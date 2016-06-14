@@ -83,8 +83,24 @@ public class MainTest {
         Main.updatePurchase(conn, 5, 1);
 
         Purchase p = Main.selectPurchase(conn, 1);
+        conn.close();
 
         assertTrue(p.qty == 5);
+    }
+
+    @Test
+    public void testDelete() throws SQLException{
+        Connection conn = startConnection();
+        Main.insertUser(conn, "a", "");
+        Main.insertItem(conn, "a", "a", "a", 5.00);
+        Main.insertPurchase(conn, 1, 1, 1);
+        Main.insertPurchase(conn, 1, 1, 1);
+        Main.insertPurchase(conn, 1, 1, 1);
+
+        Main.deletePurchase(conn, 3);
+        ArrayList<Purchase> p = Main.selectPurchasesByUser(conn, "a");
+
+        assertTrue(p.size() == 2);
     }
 
 }
