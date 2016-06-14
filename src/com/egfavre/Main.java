@@ -85,6 +85,21 @@ public class Main {
         return null;
     }
 
+    public static ArrayList<Purchase> selectPurchasesByUser(Connection conn, int userId) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM purchases INNER JOIN items ON purchases.user_id = users.id WHERE purchases.user_id = ?");
+        stmt.setInt(1, userId);
+        ResultSet results = stmt.executeQuery();
+        ArrayList<Purchase> shoppingList= new ArrayList<>();
+        while(results.next()){
+            int id = results.getInt("purchases.id");
+            int itemId = results.getInt("purchases.item_id");
+            int qty = results.getInt("purchases.qty");
+            Purchase p = new Purchase(id, userId, itemId, qty);
+            shoppingList.add(p);
+        }
+        return shoppingList;
+    }
+
 
 //    public static ArrayList<Message> selectReplies(Connection conn, int replyId) throws SQLException {
 //        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM messages INNER JOIN users ON messages.user_id = users.id WHERE messages.reply_id = ?");
