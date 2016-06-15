@@ -38,7 +38,7 @@ public class Main {
         stmt.execute();
     }
 
-    public static void  insertPurchase(Connection conn, int userId, int itemId, int qty) throws SQLException {
+    public static void insertPurchase(Connection conn, int userId, int itemId, int qty) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO purchases VALUES (NULL, ?, ?, ?)");
         stmt.setInt(1, userId);
         stmt.setInt(2, itemId);
@@ -46,11 +46,11 @@ public class Main {
         stmt.execute();
     }
 
-    public static User selectUser (Connection conn, String userName) throws SQLException {
+    public static User selectUser(Connection conn, String userName) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE user_name = ?");
-        stmt.setString(1,userName);
+        stmt.setString(1, userName);
         ResultSet results = stmt.executeQuery();
-        if (results.next()){
+        if (results.next()) {
             int id = results.getInt("id");
             String password = results.getString("password");
             return new User(id, userName, password);
@@ -58,11 +58,11 @@ public class Main {
         return null;
     }
 
-    public static Item selectItem (Connection conn, int id) throws SQLException {
+    public static Item selectItem(Connection conn, int id) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM items WHERE id = ?");
         stmt.setInt(1, id);
         ResultSet results = stmt.executeQuery();
-        if (results.next()){
+        if (results.next()) {
             String department = results.getString("department");
             String itemName = results.getString("item_name");
             String unitQty = results.getString("unit_qty");
@@ -72,11 +72,11 @@ public class Main {
         return null;
     }
 
-    public static Purchase selectPurchase (Connection conn, int id) throws SQLException {
+    public static Purchase selectPurchase(Connection conn, int id) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM purchases WHERE id = ?");
         stmt.setInt(1, id);
         ResultSet results = stmt.executeQuery();
-        if (results.next()){
+        if (results.next()) {
             int userId = results.getInt("user_id");
             int itemId = results.getInt("item_id");
             int qty = results.getInt("qty");
@@ -85,14 +85,30 @@ public class Main {
         return null;
     }
 
+    public static ArrayList<Item> departmentList(Connection conn, String department) throws SQLException {
+        ArrayList<Item> deptList = new ArrayList<>();
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM items WHERE department = ?");
+        stmt.setString(1, department);
+        ResultSet results = stmt.executeQuery();
+        if (results.next()) {
+            int id = results.getInt("id");
+            String itemName = results.getString("item_name");
+            String unityQty = results.getString("unit_qty");
+            Double unitPrice = results.getDouble("unit_price");
+            Item i = new Item(id, department, itemName, unityQty, unitPrice);
+            deptList.add(i);
+        }
+        return deptList;
+    }
+
     public static ArrayList<Purchase> selectPurchasesByUser(Connection conn, String userName) throws SQLException {
         User user = selectUser(conn, userName);
         int thisId = user.id;
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM purchases INNER JOIN users ON purchases.user_id = users.id WHERE users.id = ?");
         stmt.setInt(1, thisId);
         ResultSet results = stmt.executeQuery();
-        ArrayList<Purchase> purchaseList= new ArrayList<>();
-        while(results.next()){
+        ArrayList<Purchase> purchaseList = new ArrayList<>();
+        while (results.next()) {
             int id = results.getInt("purchases.id");
             int userId = results.getInt("purchases.user_id");
             int itemId = results.getInt("purchases.item_id");
@@ -103,81 +119,39 @@ public class Main {
         return purchaseList;
     }
 
-    public static void updatePurchase (Connection conn, int newQty, int purchaseId) throws SQLException {
+    public static void updatePurchase(Connection conn, int newQty, int purchaseId) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("UPDATE purchases SET qty = ? WHERE id = ?");
         stmt.setInt(1, newQty);
         stmt.setInt(2, purchaseId);
         stmt.execute();
     }
 
-    public static void deletePurchase (Connection conn, int purchaseId) throws SQLException {
+    public static void deletePurchase(Connection conn, int purchaseId) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("DELETE FROM purchases WHERE id = ?");
         stmt.setInt(1, purchaseId);
         stmt.execute();
     }
 
-
-//    public static ArrayList<Message> selectReplies(Connection conn, int replyId) throws SQLException {
-//        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM messages INNER JOIN users ON messages.user_id = users.id WHERE messages.reply_id = ?");
-//        stmt.setInt(1, replyId);
-//        ResultSet results = stmt.executeQuery();
-//        ArrayList<Message> msgs = new ArrayList<>();
-//        while(results.next()){
-//            int id = results.getInt("id");
-//            String text = results.getString("messages.text");
-//            String author = results.getString("users.name");
-//            Message msg = new Message(id, replyId, author, text);
-//            msgs.add(msg);
-//        }
-//        return msgs;
-//    }
-
     public static void main(String[] args) throws FileNotFoundException, SQLException {
-  /*      File f = new File("groceryFinal.csv");
+        Server.createWebServer().start();
+        Connection conn = DriverManager.getConnection("jdbc:h2:./main");
+        createTables(conn);
+
+        File f = new File("groceryFinal.csv");
         Scanner fileScanner = new Scanner(f);
-        ArrayList<Item> items = new ArrayList<>();
-        HashMap<String, User> users = new HashMap<>();
 
         fileScanner.nextLine();
         while (fileScanner.hasNextLine()) {
             String line = fileScanner.nextLine();
             String[] columns = line.split(",");
-            Item item = new Item(columns[0], columns[1], columns[2], columns[3], columns[4], "0");
-            items.add(item);
+            String department = columns[1];
+            String itemName = columns[2];
+            String unitQty = columns[3];
+            double unitPrice = Double.valueOf(columns[4]);
+
+            insertItem(conn, department, itemName, unitQty, unitPrice);
         }
 
-        ArrayList<Item> deliList = new ArrayList<>();
-        ArrayList<Item> dairyList = new ArrayList<>();
-        ArrayList<Item> produceList = new ArrayList<>();
-        ArrayList<Item> bakeryList = new ArrayList<>();
-        ArrayList<Item> frozenList = new ArrayList<>();
-
-
-        for (Item item:items) {
-
-            if (item.department.equals("Deli")) {
-                deliList.add(item);
-            }
-            if (item.department.equals("Dairy")) {
-                dairyList.add(item);
-            }
-            if (item.department.equals("Produce")) {
-                produceList.add(item);
-            }
-            if (item.department.equals("Bakery")) {
-                bakeryList.add(item);
-            }
-            if (item.department.equals("Frozen")) {
-                frozenList.add(item);
-            }
-        }*/
-
-//create server connection and tables
-        Server.createWebServer().start();
-        Connection conn = DriverManager.getConnection("jdbc:h2:./main");
-        createTables(conn);
-
-/*
 //display welcome page
         Spark.staticFileLocation("public");
         Spark.init();
@@ -187,27 +161,27 @@ public class Main {
                     HashMap a = new HashMap<>();
                     return new ModelAndView(a, "welcome.html");
                 },
-            new MustacheTemplateEngine()
-         );
-
+                new MustacheTemplateEngine()
+        );
 
         Spark.post(
                 "/login",
                 (request, response) -> {
                     String userName = request.queryParams("userName");
                     String password = request.queryParams("password");
-                    if (userName == null || password == null){
+                    if (userName == null || password == null) {
                         throw new Exception("Not Valid login");
                     }
 
-                    User user = users.get(userName);
+                    User user = selectUser(conn, userName);
                     if (user == null) {
-                        user = new User(userName, password);
-                        users.put(userName, user);
+                        insertUser(conn, userName, password);
                     }
+
+
                     Session session = request.session();
                     session.attribute("userName", userName);
-                    System.out.println(users);
+
                     response.redirect("/viewItems");
                     return "";
                 }
@@ -219,17 +193,18 @@ public class Main {
                 "/viewItems",
                 (request, response) -> {
                     HashMap b = new HashMap();
+                    String username = request.queryParams("userName");
+                    User user = selectUser(conn, username);
                     boolean loggedIn = false;
-                    if (!users.isEmpty()) {
+                    if (user.userName.equals(username)) {
                         loggedIn = true;
                     }
 
-                    b.put("items", items);
-                    b.put("deliList", deliList);
-                    b.put("dairyList", dairyList);
-                    b.put("produceList", produceList);
-                    b.put("bakeryList", bakeryList);
-                    b.put("frozenList", frozenList);
+                    b.put("deliList", departmentList(conn, "deli"));
+                    b.put("dairyList", departmentList(conn, "dairy"));
+                    b.put("produceList", departmentList(conn, "produce"));
+                    b.put("bakeryList", departmentList(conn, "bakery"));
+                    b.put("frozenList", departmentList(conn, "frozen"));
                     b.put("loggedIn", loggedIn);
                     return new ModelAndView(b, "viewItems.html");
                 },
@@ -242,19 +217,13 @@ public class Main {
                 (request, response) -> {
                     Session session = request.session();
                     String userName = session.attribute("userName");
-                    User user = users.get(userName);
 
-                    String qty = request.queryParams("qty");
-                    String id = request.queryParams("id");
+                    User user = selectUser(conn, userName);
+                    int userId = user.id;
+                    int itemId = Integer.valueOf(request.queryParams("id"));
+                    int qty = Integer.valueOf(request.queryParams("qty"));
 
-                    if (qty.isEmpty()){
-                        qty = "0";
-                    }
-                    qty = request.queryParams("qty");
-                    ArrayList<String> idQty = new ArrayList<String>();
-                    idQty.add(id);
-                    idQty.add(qty);
-                    user.shoppingList.add(idQty);
+                    insertPurchase(conn, userId, itemId, qty);
 
                     response.redirect(request.headers("Referer"));
                     return "";
@@ -265,14 +234,8 @@ public class Main {
                 (request, response) -> {
                     Session session = request.session();
                     String userName = session.attribute("userName");
-                    User user = users.get(userName);
 
-                    for (ArrayList idQty: user.shoppingList) {
-                        String idStr = (String.valueOf(idQty.get(0)));
-                        int id = (Integer.valueOf(idStr));
-                        items.get(id-1).setQty((String) idQty.get(1));
-                        user.currentList.add(items.get(id-1));
-                    }
+                    selectPurchasesByUser(conn, userName);
                     response.redirect("/shoppingList");
                     return "";
                 }
@@ -293,10 +256,22 @@ public class Main {
                 (request, response) -> {
                     Session session = request.session();
                     String userName = session.attribute("userName");
-                    User user = users.get(userName);
+                    ArrayList<Purchase> purchList = selectPurchasesByUser(conn, userName);
+                    for (Purchase p : purchList) {
+                        String qty = String.valueOf(p.qty);
+                        Item i = selectItem(conn, p.getItemId());
+                        String itemName = i.itemName;
+                        double price = i.unitPrice;
+                        String $ = "$ " + String.valueOf(price);
+                        User user = selectUser(conn, userName);
+                        ArrayList<String> listItem = new ArrayList();
+                        listItem.add(0, qty);
+                        listItem.add(1, itemName);
+                        listItem.add(2, $);
+                        user.shoppingList.add(listItem);
+                    }
                     HashMap d = new HashMap();
-                    d.put("items", items);
-                    d.put("currentList", user.currentList);
+                    d.put("shoppingList", selectUser(conn, userName).shoppingList);
                     return new ModelAndView(d, "shoppingList.html");
                 },
                 new MustacheTemplateEngine()
@@ -305,13 +280,10 @@ public class Main {
         Spark.post(
                 "/updateQty",
                 (request, response) -> {
-                    String updateQty = request.queryParams("updateQty");
-                    String id = request.queryParams("id");
-                    for (Item item:items){
-                        if (item.id.equals(id)){
-                            item.qty = updateQty;
-                        }
-                    }
+                    int newQty = Integer.valueOf(request.queryParams("updateQty"));
+                    int id = Integer.valueOf(request.queryParams("id"));
+                    updatePurchase(conn, newQty, id);
+
                     response.redirect(request.headers("Referer"));
                     return "";
                 }
@@ -322,17 +294,15 @@ public class Main {
                 (request, response) -> {
                     Session session = request.session();
                     String userName = session.attribute("userName");
-                    User user = users.get(userName);
 
-                    String id = request.queryParams("id");
-                    for (Item item:items){
-                        if (item.id.equals(id)){
-                            user.currentList.remove(item);
-                        }
-                    }
+                    int purchaseId = Integer.valueOf(request.queryParams("purchaseId"));
+
+                    deletePurchase(conn, purchaseId);
                     response.redirect(request.headers("Referer"));
                     return "";
                 }
-        );*/
+        );
     }
+
 }
+
