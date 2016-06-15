@@ -8,12 +8,14 @@ public class Purchase {
     int userId;
     int itemId;
     int qty;
+    String itemName;
 
-    public Purchase(int id, int userId, int itemId, int qty) {
+    public Purchase(int id, int userId, int itemId, int qty, String itemName) {
         this.id = id;
         this.userId = userId;
         this.itemId = itemId;
         this.qty = qty;
+        this.itemName = itemName;
     }
 
     public int getId() {

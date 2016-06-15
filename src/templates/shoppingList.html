@@ -7,7 +7,7 @@
 <body>
 <h1>Your Shopping List</h1>
 <ol>{{#shoppingList}}
-<li>{{.}}
+<li>{{itemName}} - {{qty}}
     <form action="/updateQty" method="post">
         <input type="number" name="updateQty" placeholder="new quantity"/>
         <input type="hidden" name="id" value="{{id}}">
