@@ -31,4 +31,14 @@ public class Purchase {
     public int getQty() {
         return qty;
     }
+
+    @Override
+    public String toString() {
+        return "Purchase{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", itemId=" + itemId +
+                ", qty=" + qty +
+                '}';
+    }
 }

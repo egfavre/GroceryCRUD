@@ -2,6 +2,7 @@ package com.egfavre;
 
 import org.junit.Test;
 
+import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -99,8 +100,22 @@ public class MainTest {
 
         Main.deletePurchase(conn, 3);
         ArrayList<Purchase> p = Main.selectPurchasesByUser(conn, "a");
-
+        conn.close();
         assertTrue(p.size() == 2);
+    }
+
+    @Test
+    public void testDepartmentList() throws SQLException {
+        Connection conn =  startConnection();
+        Main.insertItem(conn, "a", "a", "a", 5.00);
+        Main.insertItem(conn, "a", "a", "a", 15.00);
+        Main.insertItem(conn, "b", "ba", "ba", 5.00);
+        Main.insertItem(conn, "b", "ba", "ba", 15.00);
+
+        ArrayList<Item> i = Main.departmentList(conn, "ba");
+
+        conn.close();
+        assertTrue(i.size() == 2);
     }
 
 }

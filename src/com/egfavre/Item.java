@@ -9,7 +9,7 @@ public class Item {
     String itemName;
     String unitQty;
     double unitPrice;
-    int qty;
+
 
     public Item(int id, String department, String itemName, String unitQty, double unitPrice) {
         this.id = id;

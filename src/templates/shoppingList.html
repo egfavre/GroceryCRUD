@@ -6,8 +6,8 @@
 </head>
 <body>
 <h1>Your Shopping List</h1>
-<ol>{{#currentList}}
-<li> {{itemName}}{{unitPrice}} {{qty}}
+<ol>{{#shoppingList}}
+<li>{{.}}
     <form action="/updateQty" method="post">
         <input type="number" name="updateQty" placeholder="new quantity"/>
         <input type="hidden" name="id" value="{{id}}">
@@ -18,7 +18,7 @@
         <button type="submit">Remove from List</button>
     </form>
 </li>
-{{/currentList}}
+{{/shoppingList}}
     </ol>
 <form action="/logout" method="post">
     <button type="submit">Logout</button>

@@ -5,6 +5,18 @@
     <title>GroceryCRUD</title>
 </head>
 <body>
+
+<h1>Bakery Goods</h1>
+<ol>{{#bakeryList}}
+    {{itemName}}    {{unitQuantity}}    {{unitPrice}}
+        {{#loggedIn}}<form action="/quantity" method="post">
+            <input type="number" name="qty" placeholder="#" value="{{qty}}"/>
+            <input type="hidden" name="id" value="{{id}}">
+            <button type="submit">Add</button>
+        </form>{{/loggedIn}}
+
+    {{/bakeryList}}</ol>
+
 <h1>Deli Goods</h1>
 {{#deliList}}
 
@@ -39,16 +51,7 @@
 </ol>
 {{/produceList}}
 
-<h1>Bakery Goods</h1>
-{{#bakeryList}}
-<ol>{{id}} {{itemName}}    {{unitQuantity}}    {{unitPrice}}
-    {{#loggedIn}}<form action="/quantity" method="post">
-        <input type="number" name="qty" placeholder="#" value="{{qty}}"/>
-        <input type="hidden" name="id" value="{{id}}">
-        <button type="submit">Add</button>
-    </form>{{/loggedIn}}
-</ol>
-{{/bakeryList}}
+
 
 <h1>Frozen Goods</h1>
 {{#frozenList}}
